@@ -52,15 +52,17 @@ STDMETHODIMP ElgatoSampleCallback::BufferCB(double time, BYTE *pBuffer, long len
 // Call this from the Render thread.
 void ElgatoSampleCallback::UpdateSRV(ID3D11ShaderResourceView* srv, bool useCPU, int bufferIndex)
 {
+    
     BYTE* srcBuffer = bufferCache[bufferIndex%MAX_NUM_CACHED_BUFFERS];
     if (useCPU)
     {
         // Do not cache when using the CPU
-        DirectXHelper::ConvertYUVtoBGRA(srcBuffer, stagingBytes, FRAME_WIDTH, FRAME_HEIGHT, true);
+        DirectXHelper::ConvertYUY2toBGRA(srcBuffer, stagingBytes, FRAME_WIDTH, FRAME_HEIGHT, true);
         DirectXHelper::UpdateSRV(_device, srv, stagingBytes, FRAME_WIDTH * FRAME_BPP_RGBA);
     }
     else
     {
+        //DirectXHelper::ConvertYUY2toYUV(srcBuffer, FRAME_WIDTH, FRAME_HEIGHT);
         DirectXHelper::UpdateSRV(_device, srv, srcBuffer, FRAME_WIDTH * FRAME_BPP_RGBA);
     }
 }
