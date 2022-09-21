@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 #if UNITY_WSA
 using UnityEngine.XR.WSA;
-using UnityEngine.XR.WSA.Persistence;
+//using UnityEngine.XR.WSA.Persistence;
 #endif
 
 namespace Microsoft.MixedReality.SpectatorView

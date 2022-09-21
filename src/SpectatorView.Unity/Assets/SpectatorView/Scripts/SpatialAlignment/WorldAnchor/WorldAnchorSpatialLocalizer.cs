@@ -31,11 +31,11 @@ namespace Microsoft.MixedReality.SpectatorView
         {
             get
             {
-#if UNITY_WSA
+/* #if UNITY_WSA
                 return true;
-#else
+#else */
                 return false;
-#endif
+//#endif
             }
         }
 
