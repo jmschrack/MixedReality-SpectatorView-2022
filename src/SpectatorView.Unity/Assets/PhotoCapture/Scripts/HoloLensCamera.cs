@@ -877,7 +877,7 @@ namespace Microsoft.MixedReality.PhotoCapture
             CameraType = CameraType.Invalid;
             CaptureMode = captureMode;
 
-#if CAN_USE_UNITY_TYPES && UNITY_WSA && CAN_USE_UWP_TYPES
+#if CAN_USE_UNITY_TYPES && UNITY_WSA && CAN_USE_UWP_TYPES && !UNITY_2020_2_OR_NEWER
             IntPtr coordinateSystemPtr;
             // this must be done from the main thread, so done in 
             coordinateSystemPtr = UnityEngine.XR.WSA.WorldManager.GetNativeISpatialCoordinateSystemPtr();

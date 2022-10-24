@@ -62,10 +62,10 @@ namespace Microsoft.MixedReality.SpatialAlignment
 
                 // Let a frame pass to ensure any AR anchor is properly attached (WorldAnchors used to have issues with this)
                 await Task.Delay(100, cancellationToken);
-
+                var nativeAnchorPointer = await nativeAnchor.GetPointer();
                 CloudSpatialAnchor cloudSpatialAnchor = new CloudSpatialAnchor()
                 {
-                    LocalAnchor = nativeAnchor.GetPointer(),
+                    LocalAnchor = nativeAnchorPointer,//nativeAnchor.GetPointer(),
                     Expiration = DateTime.Now.AddDays(1)
                 };
 

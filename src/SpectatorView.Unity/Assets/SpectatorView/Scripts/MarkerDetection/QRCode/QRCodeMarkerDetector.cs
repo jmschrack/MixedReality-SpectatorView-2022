@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#if WINDOWS_UWP && UNITY_WSA && !UNITY_EDITOR_OSX
+#if WINDOWS_UWP && UNITY_WSA && !UNITY_EDITOR_OSX  //&& !UNITY_2020_2_OR_NEWER
 #define ENABLE_QRCODES
 #endif
 

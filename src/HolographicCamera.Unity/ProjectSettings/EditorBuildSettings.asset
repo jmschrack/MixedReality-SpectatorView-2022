@@ -8,4 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HolographicCamera/Scenes/HolographicCamera.unity
     guid: fef2d6d04452181448decd67d2b66d2a
-  m_configObjects: {}
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 85fd7e9101b5af94b953f0172597d60d,
+      type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 168ea03dc3fbb0240875203f347b2655,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: ada67359a9052a848934cab020cc451a,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: b275878fd89a77d49902fc6f02f82fe7,
+      type: 2}

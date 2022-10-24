@@ -9,6 +9,12 @@ static const char* av_make_error(int errnum) {
 	memset(str, 0, sizeof(str));
 	return av_make_error_string(str, AV_ERROR_MAX_STRING_SIZE, errnum);
 }
+void OutputDebugAVError(int ret) {
+	std::wstringstream ss;
+	ss << "LibDShow::ERROR sending packet to decoder:" << ret << ":" << av_make_error(ret);
+	OutputDebugString(ss.str().c_str());
+	ss.clear();
+}
 //#define OutputDebugStringFormat(...) {char cad[512]; sprintf(cad, __VA_ARGS__);  OutputDebugString(cad);}
 
 /******************************************************************************
@@ -111,26 +117,27 @@ AVPixelFormat get_format(struct AVCodecContext* s, const enum AVPixelFormat* fmt
 	bool hasYuv = false;
 	while (*current != AVPixelFormat::AV_PIX_FMT_NONE) {
 		ss << *current << ", ";
-		if (*current == AVPixelFormat::AV_PIX_FMT_UYVY422) {
-			ss << "Found UYVY4222 format!";
+		if (*current == AVPixelFormat::AV_PIX_FMT_D3D11) {
+			ss << "Found D3D11 format!";
 			OutputDebugString(ss.str().c_str());
-			return AVPixelFormat::AV_PIX_FMT_UYVY422;
+			ss.clear();
+			return AVPixelFormat::AV_PIX_FMT_D3D11;
 		}
-		else if (*current == AVPixelFormat::AV_PIX_FMT_YUV420P) {
+		/*else if (*current == AVPixelFormat::AV_PIX_FMT_YUV420P) {
 			hasYuv = true;
-		}
+		}*/
 		
 
 		++current;
 	}
-	ss << "Couldn't find UYVY. ";
-	if (hasYuv) {
+	ss << "Couldn't find AV_PIX_FMT_D3D11.  ";
+	/*if (hasYuv) {
 		ss << "Returning YUV420P";
 		defaultFmt = 0;
 	}
-	else {
+	else {*/
 		ss << "Returning default: " << defaultFmt;
-	}
+	//}
 	
 	OutputDebugString(ss.str().c_str());
 	return (AVPixelFormat)defaultFmt;
@@ -152,7 +159,7 @@ int ffmpeg_decode_init(struct ffmpeg_decode* decode, enum AVCodecID id,
 		return -1;
 
 	std::wstringstream ss;
-
+	
 	/*
 	TODO: Use hw acceleration
 	pix_fmt: AV_PIX_FMT_D3D11
@@ -192,28 +199,40 @@ int ffmpeg_decode_init(struct ffmpeg_decode* decode, enum AVCodecID id,
 	}
 	*/
 
-	ss << "LibDShow:: Checking Codec HW Config.  [format,type,is_device_ctx] ";
+	/*ss << "LibDShow:: Checking Codec HW Config.  [format,type,is_device_ctx] ";
 	for (int i = 0;; i++) {
 		const AVCodecHWConfig* config = avcodec_get_hw_config(decode->codec, i);
 		if (!config) break;
 		ss <<"["<< config->pix_fmt << ","<<config->device_type<<","<< ((config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX)>0) << "] ";
 		
 	}
-	OutputDebugString(ss.str().c_str());
+	OutputDebugString(ss.str().c_str());*/
 
 	decode->decoder = avcodec_alloc_context3(decode->codec);
 
 	decode->decoder->thread_count = 0;
-	decode->decoder->pix_fmt = AVPixelFormat::AV_PIX_FMT_UYVY422;
+	//decode->decoder->pix_fmt = AVPixelFormat::AV_PIX_FMT_UYVY422;
 	decode->decoder->width = 1920;
 	decode->decoder->height = 1080;
 	decode->decoder->get_format = &get_format;
-#ifdef USE_NEW_HARDWARE_CODEC_METHOD
-	if (use_hw)
-		init_hw_decoder(decode);
-#elseno
-	(void)use_hw;
-#endif
+	AVBufferRef* hw_ctx = NULL;
+	ret = av_hwdevice_ctx_create(&hw_ctx, AVHWDeviceType::AV_HWDEVICE_TYPE_D3D11VA, NULL, NULL, 0);
+	if (hw_ctx) {
+		decode->hw_device_ctx = hw_ctx;
+		decode->decoder->hw_device_ctx = av_buffer_ref(hw_ctx);
+		decode->hw = true;
+	}
+	else {
+		OutputDebugString(L"LibDShow::Failed to get hardware context!");
+		OutputDebugAVError(ret);
+	}
+//#ifdef USE_NEW_HARDWARE_CODEC_METHOD
+//	if (use_hw)
+//		init_hw_decoder(decode);
+//#elseno
+//	(void)use_hw;
+//#endif
+// 
 	//AVDictionary** unusedOpts;
 	ret = avcodec_open2(decode->decoder, decode->codec, NULL);
 	
@@ -291,12 +310,7 @@ static inline bool copy_data(struct ffmpeg_decode* decode, uint8_t* data,
 
 }
 
-void OutputDebugAVError(int ret) {
-	std::wstringstream ss;
-	ss << "LibDShow::ERROR sending packet to decoder:" << ret << ":" << av_make_error(ret);
-	OutputDebugString(ss.str().c_str());
-	ss.clear();
-}
+
 
 
 int ffmpeg_decode_video(struct ffmpeg_decode* decode, uint8_t* data,
@@ -314,12 +328,12 @@ int ffmpeg_decode_video(struct ffmpeg_decode* decode, uint8_t* data,
 	if (!decode->frame) {
 		decode->frame = av_frame_alloc();
 		if (!decode->frame)
-			return false;
+			return 0;
 
 		if (decode->hw && !decode->hw_frame) {
 			decode->hw_frame = av_frame_alloc();
 			if (!decode->hw_frame)
-				return false;
+				return 0;
 		}
 	}
 	out_frame = decode->hw ? decode->hw_frame : decode->frame;
@@ -344,6 +358,9 @@ int ffmpeg_decode_video(struct ffmpeg_decode* decode, uint8_t* data,
 
 	if (ret == AVERROR_EOF || ret == AVERROR(EAGAIN))
 		return 1;
+	if (ret == 0&& decode->hw) {
+		ret = av_hwframe_transfer_data(decode->frame, out_frame, 0);
+	}
 	if (ret == 0)
 		return 2;
 	OutputDebugAVError(ret);

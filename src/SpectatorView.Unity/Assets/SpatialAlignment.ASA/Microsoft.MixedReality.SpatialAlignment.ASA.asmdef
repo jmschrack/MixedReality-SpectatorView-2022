@@ -1,9 +1,12 @@
 {
     "name": "Microsoft.MixedReality.SpatialAlignment.ASA",
+    "rootNamespace": "",
     "references": [
         "GUID:a9420e37d7990b54abdef6688edbe313",
         "GUID:396e9e3590cefd44198cd1e642263f09",
-        "GUID:92703082f92b41ba80f0d6912de66115"
+        "GUID:92703082f92b41ba80f0d6912de66115",
+        "GUID:33d8827e6b886c24980a9ae3153d16c9",
+        "GUID:9a6ddf5d388cc2b498e8a9d44bd289f0"
     ],
     "includePlatforms": [
         "Android",

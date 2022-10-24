@@ -251,6 +251,14 @@ public:
         ConvertYUVtoBGRA_CPU(input, nullptr, output, width, height, rgba);
     }
 
+    static void ConvertYUY2toBGRA(BYTE* input, BYTE*& output, int width, int height, bool rgba = false) {
+        ConvertyYUY2toBGRA_CPU(input, nullptr, output, width, height, rgba);
+    }
+
+    static void ConvertYUY2toYUV(BYTE*& input,  int width, int height) {
+        ConvertyYUY2toYUV_CPU(input, width, height);
+    }
+
     // Convert a BGRA input buffer to a YUV output buffer.
     static void ConvertBGRAtoYUV(BYTE* input, BYTE*& output, BYTE*& alphaOut, int width, int height)
     {
@@ -506,6 +514,132 @@ public:
     }
 
 private:
+    static void ConvertyYUY2toYUV_CPU(BYTE*& input, int width, int height) {
+        for (int i = 0, j = 0, a = 0; i < width * height * FRAME_BPP_YUV - (FRAME_BPP_YUV * 4); i += FRAME_BPP_YUV * 4, j += FRAME_BPP_RGBA * 4, a += 4)
+        {
+            int u, y0, v, y1;
+            int u2, y02, v2, y12;
+
+            u = (int)input[i + 1];
+            y0 = (int)input[i];
+            v = (int)input[i + 3];
+            y1 = (int)input[i + 2];
+
+            u2 = (int)input[i + 5];
+            y02 = (int)input[i + 4];
+            v2 = (int)input[i + 7];
+            y12 = (int)input[i + 6];
+
+            input[i] = (BYTE)u;
+            input[i + 1] = (BYTE)y0;
+            input[i + 2] = (BYTE)v;
+            input[i + 3] = (BYTE)y1;
+
+            input[i + 4] = (BYTE)u2;
+            input[i + 5] = (BYTE)y02;
+            input[i + 6] = (BYTE)v2;
+            input[i + 7] = (BYTE)y12;
+        }
+        
+    }
+    static void ConvertyYUY2toBGRA_CPU(BYTE* input, BYTE* alphaInput, BYTE*& output, int width, int height, bool rgba = false) {
+        for (int i = 0, j = 0, a = 0; i < width * height * FRAME_BPP_YUV - (FRAME_BPP_YUV * 4); i += FRAME_BPP_YUV * 4, j += FRAME_BPP_RGBA * 4, a += 4)
+        {
+            int u, y0, v, y1;
+            int u2, y02, v2, y12;
+
+            u = (int)input[i+1];
+            y0 = (int)input[i];
+            v = (int)input[i + 3];
+            y1 = (int)input[i + 2];
+
+            u2 = (int)input[i + 5];
+            y02 = (int)input[i + 4];
+            v2 = (int)input[i + 7];
+            y12 = (int)input[i + 6];
+
+            int b1, g1, r1, a1;
+            int b2, g2, r2, a2;
+            int b3, g3, r3, a3;
+            int b4, g4, r4, a4;
+
+            GetRGB(y0, y1, u, v, r1, g1, b1, r2, g2, b2);
+            GetRGB(y02, y12, u2, v2, r3, g3, b3, r4, g4, b4);
+
+            a1 = 255;
+            a2 = 255;
+            a3 = 255;
+            a4 = 255;
+
+            if (alphaInput != nullptr)
+            {
+                a1 = (int)alphaInput[a];
+                a2 = (int)alphaInput[a + 1];
+                a3 = (int)alphaInput[a + 2];
+                a4 = (int)alphaInput[a + 3];
+            }
+
+            if (rgba)
+            {
+                int swap = r1;
+                r1 = b1;
+                b1 = swap;
+
+                swap = r2;
+                r2 = b2;
+                b2 = swap;
+
+                swap = r3;
+                r3 = b3;
+                b3 = swap;
+
+                swap = r4;
+                r4 = b4;
+                b4 = swap;
+            }
+
+            output[j] = (byte)Clamp(r1);
+            output[j + 1] = (byte)Clamp(g1);
+            output[j + 2] = (byte)Clamp(b1);
+            output[j + 3] = (byte)Clamp(a1);
+
+            output[j + 4] = (byte)Clamp(r2);
+            output[j + 5] = (byte)Clamp(g2);
+            output[j + 6] = (byte)Clamp(b2);
+            output[j + 7] = (byte)Clamp(a2);
+
+            output[j + 8] = (byte)Clamp(r3);
+            output[j + 9] = (byte)Clamp(g3);
+            output[j + 10] = (byte)Clamp(b3);
+            output[j + 11] = (byte)Clamp(a3);
+
+            output[j + 12] = (byte)Clamp(r4);
+            output[j + 13] = (byte)Clamp(g4);
+            output[j + 14] = (byte)Clamp(b4);
+            output[j + 15] = (byte)Clamp(a4);
+        }
+        //BYTE* ptrIn = input;
+        //BYTE*& ptrOut = output;
+        //for (int i = 0; i < width / 2; ++i) {
+        //    int y0 = ptrIn[0];
+        //    int u0 = ptrIn[1];
+        //    int y1 = ptrIn[2];
+        //    int v0 = ptrIn[3];
+        //    ptrIn += 4;
+        //    int c = y0 - 16;
+        //    int d = u0 - 128;
+        //    int e = v0 - 128;
+        //    ptrOut[0] = (byte)Clamp((298 * c + 516 * d + 128) >> 8); // blue
+        //    ptrOut[1] = (byte)Clamp((298 * c - 100 * d - 208 * e + 128) >> 8); // green
+        //    ptrOut[2] = (byte)Clamp((298 * c + 409 * e + 128) >> 8); // red
+        //    c = y1 - 16;
+        //    ptrOut[3] = (byte)Clamp((298 * c + 516 * d + 128) >> 8); // blue
+        //    ptrOut[4] = (byte)Clamp((298 * c - 100 * d - 208 * e + 128) >> 8); // green
+        //    ptrOut[5] = (byte)Clamp((298 * c + 409 * e + 128) >> 8); // red
+        //    ptrOut += 6;
+        //}
+    }
+
     static void ConvertYUVtoBGRA_CPU(BYTE* input, BYTE* alphaInput, BYTE*& output, int width, int height, bool rgba = false)
     {
         for (int i = 0, j = 0, a = 0; i < width * height * FRAME_BPP_YUV - (FRAME_BPP_YUV * 4); i += FRAME_BPP_YUV * 4, j += FRAME_BPP_RGBA * 4, a += 4)

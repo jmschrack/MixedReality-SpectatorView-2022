@@ -71,7 +71,7 @@ namespace Microsoft.MixedReality.SpectatorView
         {
             location = Matrix4x4.identity;
 
-#if WINDOWS_UWP
+#if WINDOWS_UWP //&& !UNITY_2020_2_OR_NEWER
             try
             {
                 var coordinateSystem = SpatialGraphInteropPreview.CreateCoordinateSystemForNode(spatialGraphNodeId);
@@ -90,6 +90,7 @@ namespace Microsoft.MixedReality.SpectatorView
         }
 
 #if WINDOWS_UWP
+
         /// <summary>
         /// Tries to obtain the QRCode location in Unity Space.
         /// The position component of the location matrix will be at the top left of the QRCode
@@ -109,7 +110,11 @@ namespace Microsoft.MixedReality.SpectatorView
             {
                 try
                 {
+                    #if UNITY_2020_2_OR_NEWER
+                    var appSpatialCoordinateSystem = Windows.Perception.Spatial.SpatialLocator.GetDefault().CreateStationaryFrameOfReferenceAtCurrentLocation().CoordinateSystem;
+                    #else
                     var appSpatialCoordinateSystem = WinRTExtensions.GetSpatialCoordinateSystem(UnityEngine.XR.WSA.WorldManager.GetNativeISpatialCoordinateSystemPtr());
+                    #endif  
                     if (appSpatialCoordinateSystem != null)
                     {
                         // Get the relative transform from the unity origin
@@ -164,6 +169,8 @@ namespace Microsoft.MixedReality.SpectatorView
                 return false;
             }
         }
+
+
 #endif // WINDOWS_UWP
 
         public Guid GetIdForQRCode(string qrCodeData)

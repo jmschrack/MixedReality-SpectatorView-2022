@@ -30,7 +30,8 @@ namespace Microsoft.MixedReality.SpectatorView
         private Stopwatch timestampStopwatch;
         private SpatialCoordinateSystemParticipant sharedCoordinateParticipant;
         private INetworkConnection currentConnection;
-
+        private float lastHeartbeat = 0f;
+        private float heartbeatSeconds = 5f;
 #if !UNITY_EDITOR && UNITY_WSA
         private Calendar timeConversionCalendar;
 #endif
@@ -66,6 +67,31 @@ namespace Microsoft.MixedReality.SpectatorView
 
         private void Update()
         {
+            lastHeartbeat += Time.deltaTime;
+            if (lastHeartbeat >= heartbeatSeconds)
+            {
+                string msg = "HolographicCamera::Heartbeat - UNITY_WSA=";
+#if UNITY_WSA
+                msg += "true";
+#else
+                msg+="false";
+#endif
+                msg += " | WINDOWS_UWP=";
+#if WINDOWS_UWP
+                msg+="true";
+#else
+                msg += "false";
+#endif
+                msg += " | ENABLE_QRCODES=";
+#if WINDOWS_UWP && UNITY_WSA && !UNITY_EDITOR_OSX
+msg+="true";
+#else
+                msg += "false";
+#endif
+                Debug.Log(msg);
+                lastHeartbeat = 0f;
+            }
+
             if (currentConnection == null || !currentConnection.IsConnected)
             {
                 return;
@@ -123,7 +149,7 @@ namespace Microsoft.MixedReality.SpectatorView
 
         private bool GetHistoricalPose(out Vector3 cameraPosition, out Quaternion cameraRotation)
         {
-#if !UNITY_EDITOR && UNITY_WSA
+#if !UNITY_EDITOR && UNITY_WSA && !UNITY_2020_2_OR_NEWER
             SpatialCoordinateSystem unityCoordinateSystem = Marshal.GetObjectForIUnknown(WorldManager.GetNativeISpatialCoordinateSystemPtr()) as SpatialCoordinateSystem;
             if (unityCoordinateSystem == null)
             {

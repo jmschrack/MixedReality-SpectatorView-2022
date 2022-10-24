@@ -138,7 +138,7 @@ namespace Microsoft.MixedReality.SpectatorView
                 fontStyle = textMesh.fontStyle;
                 fontWeight = (int) textMesh.fontWeight;
                 horizontalMapping = textMesh.horizontalMapping;
-                ignoreRectMaskCulling = textMesh.ignoreRectMaskCulling;
+                ignoreRectMaskCulling = false;//textMesh.ignoreRectMaskCulling;
                 ignoreVisibility = textMesh.ignoreVisibility;
                 isOrthographic = textMesh.isOrthographic;
                 isOverlay = textMesh.isOverlay;
@@ -233,7 +233,7 @@ namespace Microsoft.MixedReality.SpectatorView
                 enableKerning == other.enableKerning &&
                 enableWordWrapping == other.enableWordWrapping &&
                 extraPadding == other.extraPadding &&
-                ignoreRectMaskCulling == other.ignoreRectMaskCulling &&
+                //ignoreRectMaskCulling == other.ignoreRectMaskCulling &&
                 ignoreVisibility == other.ignoreVisibility &&
                 isOrthographic == other.isOrthographic &&
                 isOverlay == other.isOverlay &&

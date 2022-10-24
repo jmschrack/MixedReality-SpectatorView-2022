@@ -110,7 +110,7 @@ namespace Microsoft.MixedReality.SpectatorView
             async Task StartAppAsync()
             {
                 var request = await SendRequest(StartAppRoute, "POST");
-                if (request.isHttpError || request.isNetworkError)
+                if (request.result == UnityWebRequest.Result.ConnectionError ||request.result == UnityWebRequest.Result.ProtocolError)
                 {
                     Debug.LogError("Could not send a request to start the app: " + request.error);
                     State = DevicePortalState.NotStarted;
@@ -147,7 +147,7 @@ namespace Microsoft.MixedReality.SpectatorView
             async Task StopAppAsync()
             {
                 var request = await SendRequest(StopAppRoute, "DELETE");
-                if (request.isNetworkError || request.isHttpError)
+                if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
                 {
                     Debug.LogError($"Could not send a request to stop the app: {request.error}");
                     return;
@@ -239,8 +239,8 @@ namespace Microsoft.MixedReality.SpectatorView
         private async Task<T> SendJSONRequest<T>(string route, string method = "GET", CancellationToken? ct = null)
         {
             var request = await SendRequest(route, method, ct);
-
-            if (request.isNetworkError || request.isHttpError)
+            
+            if (request.result == UnityWebRequest.Result.ConnectionError ||(request.result == UnityWebRequest.Result.ProtocolError))
             {
                 State = DevicePortalState.NotConnected;
                 var exception = new IOException("Could not send request to device portal: " + request.error);
