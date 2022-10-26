@@ -111,7 +111,7 @@ namespace Microsoft.MixedReality.SpectatorView
                 try
                 {
                     #if UNITY_2020_2_OR_NEWER
-                    var appSpatialCoordinateSystem = Windows.Perception.Spatial.SpatialLocator.GetDefault().CreateStationaryFrameOfReferenceAtCurrentLocation().CoordinateSystem;
+                    var appSpatialCoordinateSystem = WMCoordinateSystem.GetInstance() as SpatialCoordinateSystem;//Windows.Perception.Spatial.SpatialLocator.GetDefault().CreateStationaryFrameOfReferenceAtCurrentLocation().CoordinateSystem;
                     #else
                     var appSpatialCoordinateSystem = WinRTExtensions.GetSpatialCoordinateSystem(UnityEngine.XR.WSA.WorldManager.GetNativeISpatialCoordinateSystemPtr());
                     #endif  

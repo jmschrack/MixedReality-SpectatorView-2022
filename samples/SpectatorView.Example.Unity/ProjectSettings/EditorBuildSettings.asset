@@ -23,4 +23,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SpectatorView.TestScene2.unity
     guid: 7ec8d09e480bccf43a45744d91abf116
-  m_configObjects: {}
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 7dd6b3ea22b1bb74b8d95a92463287c4,
+      type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 236ea59ffbad6e941894bc336a242ecf,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 5549fb39d3308544b8f43cb43533f85c,
+      type: 2}

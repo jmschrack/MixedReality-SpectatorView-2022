@@ -20,6 +20,7 @@
     "com.unity.xr.arcore": "4.1.7",
     "com.unity.xr.arfoundation": "4.1.7",
     "com.unity.xr.arkit": "4.1.7",
-    "com.microsoft.azure.spatial-anchors-sdk.core": "2.13.0"
+    "com.microsoft.azure.spatial-anchors-sdk.core": "2.13.0",
+    "com.microsoft.mixedreality.openxr": "1.5.1"
   }
 }

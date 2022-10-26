@@ -147,10 +147,23 @@ msg+="true";
             }
         }
 
+
+/*
+Support for built-in XR is removed in the latest Unity version. The WinRT API, such as Windows.Perception.Spatial.SpatialLocator is the alternative for it. 
+For your case, you can use var spatialCoordinateSystem = SpatialLocator.GetDefault().CreateStationaryFrameOfReferenceAtCurrentLocation().CoordinateSystem; 
+    to create a coordinate system with the origin placed at the device's position as the app is launched.
+
+*/
+
         private bool GetHistoricalPose(out Vector3 cameraPosition, out Quaternion cameraRotation)
         {
-#if !UNITY_EDITOR && UNITY_WSA && !UNITY_2020_2_OR_NEWER
+            
+#if !UNITY_EDITOR && UNITY_WSA 
+            #if UNITY_2020_2_OR_NEWER
+            SpatialCoordinateSystem unityCoordinateSystem = WMCoordinateSystem.GetInstance() as SpatialCoordinateSystem;
+            #else
             SpatialCoordinateSystem unityCoordinateSystem = Marshal.GetObjectForIUnknown(WorldManager.GetNativeISpatialCoordinateSystemPtr()) as SpatialCoordinateSystem;
+            #endif
             if (unityCoordinateSystem == null)
             {
                 Debug.LogError("Failed to get the native SpatialCoordinateSystem");
