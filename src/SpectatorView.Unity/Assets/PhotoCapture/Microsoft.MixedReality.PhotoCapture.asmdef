@@ -1,13 +1,16 @@
 {
     "name": "Microsoft.MixedReality.PhotoCapture",
+    "rootNamespace": "",
     "references": [
+        "GUID:3b76ab8242cc35d479edf0a949d56d59"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

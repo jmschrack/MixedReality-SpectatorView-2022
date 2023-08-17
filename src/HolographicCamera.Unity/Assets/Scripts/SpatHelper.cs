@@ -10,7 +10,7 @@ public class SpatHelper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
 #if !UNITY_EDITOR && UNITY_WSA
             WMCoordinateSystem.SetInstance(Microsoft.MixedReality.OpenXR.PerceptionInterop.GetSceneCoordinateSystem(UnityEngine.Pose.identity));// as SpatialCoordinateSystem;    
 #endif

@@ -36,8 +36,9 @@ ElgatoFrameProvider::ElgatoFrameProvider(bool useCPU) :
     _useCPU(useCPU), dshowDevice(InitGraph::False)
 {
     DShow::SetLogCallback(&LogOut, nullptr);
+    /*
     ifstream myfile;
-    OutputDebugString(L"LibDShow: Attempting to load dummyfile wall.yuv....\n");
+    //OutputDebugString(L"LibDShow: Attempting to load dummyfile wall.yuv....\n");
     std::wstringstream ss;
     ss << "LibDShow::Dummy file Size:";
     myfile.open("wall.yuv", ios::in  | ios::binary);
@@ -59,6 +60,7 @@ ElgatoFrameProvider::ElgatoFrameProvider(bool useCPU) :
     //myfile.read((unsigned char*)dummyFrame);
     //myfile.write((char*)data, size);
     myfile.close();
+    */
 }
 
 

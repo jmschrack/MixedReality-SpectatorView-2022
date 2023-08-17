@@ -130,7 +130,7 @@ namespace Microsoft.MixedReality.SpectatorView
             if (heatmapImage)
                 heatmapImage.texture = chessboardHeatmap;
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            /* if (Input.GetKeyDown(KeyCode.Space))
             {
                 TakePhoto();
             }
@@ -138,7 +138,7 @@ namespace Microsoft.MixedReality.SpectatorView
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 CalculateCameraIntrinsics();
-            }
+            } */
         }
 
         public void TakePhoto()

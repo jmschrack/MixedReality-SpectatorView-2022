@@ -12,6 +12,7 @@ namespace Microsoft.MixedReality.SpectatorView
     /// </summary>
     public class HoloLensTrackingObserver : TrackingObserver
     {
+                
         /// <inheritdoc/>
         public override TrackingState TrackingState
         {
@@ -19,12 +20,16 @@ namespace Microsoft.MixedReality.SpectatorView
             {
 #if UNITY_EDITOR
                 return TrackingState.Tracking;
-#elif UNITY_WSA && !UNITY_2020_2_OR_NEWER
+#elif UNITY_WSA 
+
+#if UNITY_2020_2_OR_NEWER
+                if(Microsoft.MixedReality.OpenXR.OpenXRContext.Current.IsSessionRunning)
+#else
                 if (UnityEngine.XR.WSA.WorldManager.state == UnityEngine.XR.WSA.PositionalLocatorState.Active)
+#endif
                 {
                     return TrackingState.Tracking;
                 }
-
                 return TrackingState.LostTracking;
 #else
                 return TrackingState.Unknown;

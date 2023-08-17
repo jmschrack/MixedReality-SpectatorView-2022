@@ -275,6 +275,13 @@ namespace Microsoft.MixedReality.SpectatorView.Editor
                 {
                     CompositionManager compositionManager = GetCompositionManager();
                     GUI.enabled = CanPlay;
+                    /*
+compositionManager != null &&
+                       compositionManager.TextureManager != null &&
+                       !IsRecording &&
+                       isCalibrationDataParsed &&
+                       isIndexFileParsed;
+                    */
                     if (IsPlaying)
                     {
                         if (GUILayout.Button("Stop", GUILayout.Width(startStopRecordingButtonWidth), GUILayout.Height(startStopRecordingButtonHeight)))
@@ -284,9 +291,16 @@ namespace Microsoft.MixedReality.SpectatorView.Editor
                     }
                     else
                     {
-                        if (GUILayout.Button("Play", GUILayout.Width(startStopRecordingButtonWidth), GUILayout.Height(startStopRecordingButtonHeight)))
+                        //(compositionManager!=null?(compositionManager.TextureManager!=null?"":"Missing TexMan "):"Missing compMan ")+(!IsRecording?"":"IsRecording ")+(isCalibrationDataParsed?"":"isCalibrationDataParsed ")+(isIndexFileParsed?"":"isIndexFileParsed ")
+                        if (GUILayout.Button("Play ", GUILayout.Width(startStopRecordingButtonWidth), GUILayout.Height(startStopRecordingButtonHeight)))
                         {
                             IsPlaying = true;
+                        }
+                        if(!CanPlay){
+                            GUI.enabled = true;
+                            if(GUILayout.Button("Check Status" )){
+                                Debug.LogFormat("CompositionManager:{0} TextureManager:{1} IsRecording:{2} isCalibrationDataParsed:{3} isIndexFileParsed:{4}", compositionManager != null, (compositionManager != null && compositionManager.TextureManager != null), IsRecording, isCalibrationDataParsed, isIndexFileParsed);
+                            }
                         }
                     }
                     GUI.enabled = true;

@@ -9,7 +9,7 @@
         "Unity.TextMeshPro",
         "Unity.XR.ARFoundation",
         "UnityEngine.UI",
-        "Microsoft.MixedReality.WorldLocking.Core"
+        "Microsoft.MixedReality.OpenXR"
     ],
     "includePlatforms": [
         "Android",

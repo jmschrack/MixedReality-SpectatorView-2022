@@ -164,10 +164,10 @@ namespace Microsoft.MixedReality.SpectatorView
                 feedImage.texture = CompositorWrapper.Instance.GetVideoCameraFeed();
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            /* if (Input.GetKeyDown(KeyCode.Space))
             {
                 RequestHeadsetData();
-            }
+            } */
 
             if (headsetData != null)
             {
@@ -194,10 +194,10 @@ namespace Microsoft.MixedReality.SpectatorView
                 headsetData = null;
             }
 
-            if (Input.GetKeyDown(KeyCode.Return))
+            /* if (Input.GetKeyDown(KeyCode.Return))
             {
                 CalculateExtrinsics();
-            }
+            } */
         }
 
         /// <summary>
